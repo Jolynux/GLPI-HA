@@ -19,11 +19,11 @@ services:
       - "./conf_mariadb/galera.cnf:/etc/mysql/conf.d/01-galera.cnf
       - "./storage/mysql:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: "ChangeIt"
-      MYSQL_DATABASE: "glpi"
-      MYSQL_USER: "glpi"
-      MYSQL_PASSWORD: "glpi"
-    command: ["mysqld", "--wsrep-new-cluster"] # the argument --wsrep-new-cluster is only suitable for first node to initiate galera cluster
+      MYSQL_ROOT_PASSWORD: ${GLPI_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${GLPI_DB_NAME}
+      MYSQL_USER: ${GLPI_DB_USER}
+      MYSQL_PASSWORD: ${GLPI_DB_PASSWORD}
+    command: ["mysqld", "--wsrep-new-cluster"]                                   # the argument --wsrep-new-cluster is only suitable for first node to initiate galera cluster
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_PASSWORD
       start_period: 5s
