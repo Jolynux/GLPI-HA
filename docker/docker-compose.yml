@@ -1,0 +1,33 @@
+services:
+  glpi:
+    image: "glpi/glpi:10.0.20"
+    container_name: "glpi_app"
+    restart: "unless-stopped"
+    volumes:
+      - "./storage/glpi:/var/glpi:rw"
+    env_file: .env
+    depends_on:
+        db:
+          condition: service_healthy
+    network_mode: host
+
+  db:
+    image: "mariadb:10.6"
+    container_name: "glpi_db"
+    restart: "unless-stopped"
+    volumes:
+      - "./conf_mariadb/galera.cnf:/etc/mysql/conf.d/01-galera.cnf
+      - "./storage/mysql:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: "ChangeIt"
+      MYSQL_DATABASE: "glpi"
+      MYSQL_USER: "glpi"
+      MYSQL_PASSWORD: "glpi"
+    command: ["mysqld", "--wsrep-new-cluster"] # the argument --wsrep-new-cluster is only suitable for first node to initiate galera cluster
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    network_mode: host
