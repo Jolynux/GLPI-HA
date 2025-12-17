@@ -1,0 +1,14 @@
+[mysqld]
+binlog_format=ROW
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+innodb_flush_log_at_trx_commit=2
+innodb_doublewrite=1
+wsrep_on=ON
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_sst_method=rsync
+  
+wsrep_cluster_address="gcomm://192.168.1.10,192.168.1.11,192.168.1.12"    # modify theses IP Adress to match your cluster, FQDN can be applied but may cause troubles in case of service DNS issues
+wsrep_cluster_name="GLPI_DB_CLUSTER"                                      
+wsrep_node_name="GLPI-NODE-1"                                             # modify node name on every host you'll deploy
+wsrep_node_address="192.168.1.10"                                         # match ip address of node
